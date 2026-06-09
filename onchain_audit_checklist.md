@@ -45,8 +45,17 @@
 - [ ] Flag history as PARTIAL if pagination was capped before reaching genesis
 - [ ] Unmatched sells (no preceding buy) = incomplete history, do not infer buy price
 
-## Known Gaps in Current Build (as of 2026-06-09)
-- [ ] Fees NOT currently deducted in FIFO accounting — ROI is GROSS not NET
-- [ ] PumpSwap post-graduation coverage is partial (source resolution not complete)
+## Audit Results (2026-06-09)
+- [x] CORRECTED: tx base/priority fees ARE deducted (once, correctly) via the
+      balance-delta + meta.fee machinery. Earlier "ROI is gross" claim was wrong.
+- [x] FIXED: pump.fun 1.25% bonding-curve fee was dropped on the explicit-spend path
+      (wallet→curve transfer only). Now uplifted by PUMP_BONDING_CURVE_FEE_RATE=0.0125
+      in live_rpc_source.py. Verified to within 1 lamport of on-chain ground truth.
+      Buys on the balance-delta fallback path already included the fee.
+
+## Remaining Gaps in Current Build (as of 2026-06-09)
+- [ ] PumpSwap post-graduation coverage is partial; fees there are tiered (0.30%–1.25%)
+      and NOT the flat bonding-curve 1.25% — needs market-cap tier lookup, not yet built
 - [ ] Pagination cap means most scans return PARTIAL_CA_TRADE_HISTORY
 - [ ] Copy sim slippage uses aggregate formula, not per-trade price replay
+- [ ] Graduation threshold (SOL) still unverified on-chain — do not treat as fact
